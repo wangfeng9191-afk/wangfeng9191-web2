@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wangfeng9191 · AI作品集</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+  <style>
+    :root {
+      --neon-blue: #00f0ff;
+      --neon-purple: #bc00ff;
+      --neon-pink: #ff00aa;
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(0,240,255,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #050510;
+      color: #e0e0ff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #vanta-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 60px 20px 80px;
+    }
+
+    /* ── Header ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 28px;
+    }
+
+    .avatar-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(var(--neon-blue), var(--neon-purple), var(--neon-pink), var(--neon-blue));
+      animation: spin 4s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid #050510;
+      background: linear-gradient(135deg, #1a1a3e, #0d0d2b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink), var(--neon-blue));
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientMove 4s linear infinite, glitch 6s infinite;
+      margin-bottom: 14px;
+    }
+
+    @keyframes gradientMove { to { background-position: 300% center; } }
+
+    @keyframes glitch {
+      0%, 90%, 100% { text-shadow: none; transform: none; }
+      92% { text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--neon-blue); transform: skewX(2deg); }
+      94% { text-shadow: -2px 0 var(--neon-pink), 2px 0 var(--neon-blue); transform: skewX(-2deg); }
+      96% { text-shadow: none; transform: none; }
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: rgba(200,200,255,0.6);
+      margin-bottom: 20px;
+    }
+
+    .contact a {
+      color: var(--neon-blue);
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(0,240,255,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .contact a:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 52px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--neon-purple);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(188,0,255,0.4), transparent);
+    }
+
+    /* ── Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px 18px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(0,240,255,0.08), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 24px rgba(0,240,255,0.25), 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon { font-size: 28px; }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e0e0ff;
+    }
+
+    .card-arrow {
+      font-size: 12px;
+      color: var(--neon-blue);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: auto;
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* game cards slightly different accent */
+    .card.game { --card-border: rgba(188,0,255,0.2); }
+    .card.game:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 24px rgba(188,0,255,0.25), 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .card.game::before {
+      background: radial-gradient(circle at 50% 0%, rgba(188,0,255,0.08), transparent 70%);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(200,200,255,0.25);
+      font-size: 13px;
+      margin-top: 40px;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+      .content { padding: 40px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<div class="content">
+
+  <div class="hero">
+    <div class="avatar-wrap">
+      <div class="avatar">🤖</div>
+    </div>
+    <h1>wangfeng9191's AI作品集</h1>
+    <p class="subtitle">欢迎和我一起玩 AI ~~</p>
+    <div class="contact">
+      <a href="mailto:wangfeng9191@126.com">wangfeng9191@126.com</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎮 我的 AI 游戏</div>
+    <div class="cards">
+      <a class="card game" href="https://card.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">🃏</div>
+        <div class="card-name">疯狂8点</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+      <a class="card game" href="https://sum.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">🔢</div>
+        <div class="card-name">数字消消乐</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+      <a class="card game" href="https://fangyu.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">🛡️</div>
+        <div class="card-name">新星防御</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+      <a class="card game" href="https://feiji.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">🚀</div>
+        <div class="card-name">星际先锋</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⚡ 我的 AI 应用</div>
+    <div class="cards">
+      <a class="card" href="https://yufa.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">📘</div>
+        <div class="card-name">英语语法（初中）</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+      <a class="card" href="https://yufa2.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">📗</div>
+        <div class="card-name">英语语法（高中）</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+      <a class="card" href="https://xintiao.wangfeng9191.com/" target="_blank" rel="noopener">
+        <div class="card-icon">💓</div>
+        <div class="card-name">心跳</div>
+        <div class="card-arrow">打开 →</div>
+      </a>
+    </div>
+  </div>
+
+  <footer>Built with AI · wangfeng9191</footer>
+
+</div>
+
+<script>
+  VANTA.BIRDS({
+    el: "#vanta-bg",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    backgroundColor: 0x050510,
+    color1: 0x00f0ff,
+    color2: 0xbc00ff,
+    colorMode: "lerp",
+    birdSize: 1.2,
+    wingSpan: 28.00,
+    speedLimit: 4.00,
+    separation: 60.00,
+    alignment: 50.00,
+    cohesion: 50.00,
+    quantity: 3.00
+  });
+</script>
+
+</body>
+</html>
